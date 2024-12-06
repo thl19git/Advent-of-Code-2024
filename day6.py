@@ -5,24 +5,25 @@ input = get_input(6, False)
 rows = len(input)
 cols = len(input[0])
 
-grid = {}
-for r in range(rows):
-    for c in range(cols):
-        grid[(r,c)] = input[r][c]
+def get_grid():
+    grid = {}
+    for r in range(rows):
+        for c in range(cols):
+            grid[(r,c)] = input[r][c]
+    return grid
 
 # PART 1
 
+part1_grid = get_grid()
 start_location = (0,0)
+dir = (-1,0) # Initially pointing up
 
 # Identify the starting position
 for r in range(rows):
     for c in range(cols):
-        if grid[(r,c)] == "^":
+        if part1_grid[(r,c)] == "^":
             start_location = (r,c)
             break
-
-# Initially pointing up
-dir = (-1,0)
 
 next_dir = {
     (-1,0): (0,1),
@@ -36,13 +37,13 @@ part1 = 0
 location = start_location
 
 while True:
-    if grid[location] != "X":
+    if part1_grid[location] != "X":
         part1 += 1
-        grid[location] = "X"
+        part1_grid[location] = "X"
     
     # Get the next spot
     next_location = tuple(map(sum, zip(location, dir)))
-    next_spot = grid.get(next_location, "")
+    next_spot = part1_grid.get(next_location, "")
 
     # Check if next spot is out of bounds -> finish
     if next_spot == "":
@@ -58,18 +59,14 @@ while True:
 
 # PART 2 (yes this is a horrible brute force solution)
 
-grid = {}
-for r in range(rows):
-    for c in range(cols):
-        grid[(r,c)] = input[r][c]
-
 part2 = 0
+part2_grid = get_grid()
 
 for r in range(rows):
     for c in range(cols):
-        if grid[(r,c)] == ".":
+        if part1_grid[(r,c)] == "X":
             # Potential spot for an obstruction
-            new_grid = grid.copy()
+            new_grid = part2_grid.copy()
             new_grid[(r,c)] = "#"
             path = {}
             location = start_location
