@@ -15,25 +15,21 @@ for r in range(rows):
             grid[complex(r,c)] = "."
 
 def get_min_steps(grid):
-    min_steps = {}
+    seen = set()
     q = Queue()
     q.put((complex(0,0),0))
     while not q.empty():
         pos, steps = q.get()
-        if pos not in min_steps:
-            min_steps[pos] = steps
-        else:
-            if steps < min_steps[pos]:
-                min_steps[pos] = steps
-            else:
-                continue
-        if pos == complex(rows-1, cols-1):
+        if pos in seen:
             continue
+        seen.add(pos)
+        if pos == complex(rows-1, cols-1):
+            return steps
         for change in [1, -1, 1j, -1j]:
             if grid.get(pos+change, "#") != "#":
                 q.put((pos + change, steps + 1))
     
-    return min_steps.get(complex(rows-1,cols-1), None)
+    return None
 
 print("Part 1:", get_min_steps(grid))
 
